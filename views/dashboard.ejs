@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="./css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/jquery.dataTables.css">
+  	<style type="text/css">
+  		#content{
+  			margin-top: 50px;
+  		}
+  	</style>
+
+</head>
+<body>
+
+		<!-- header start -->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  				<a class="navbar-brand">Telestax</a>
+    				<!-- <img src="./img/logo.png" > -->
+					</a>	
+				</nav>
+  	
+		<!-- end header -->
+
+		<!-- start content -->
+		<section class="container" id="content">
+			<div class="card">
+				<div class="card-body">
+				<div class="card-title">
+					<div class="row container">
+						<div class="col-sm-6 col-md-6">
+							Mapping 
+						</div>
+						<div class="col-sm-6 col-md-6">
+							<span class="btn btn-primary" data-toggle="modal" data-target="#createModal">Create New Mapping
+							</span>
+						
+						</div>
+					</div>
+				</div>
+				
+					<div class="table-responsive">
+						<table id="mappingTable" class="table display">
+							    <thead>
+							        <tr>
+							            <th>Sr no</th>
+							            <th>id</th>
+							            <th>jabberAddress</th>
+													<th>External Address</th>
+													<th>Friendly name</th>
+							            <th>Operation</th>
+							        </tr>
+							    </thead>
+							    <tbody>
+							    	<%  for( var map in mapping){ %>
+							        	<tr id='<%=mapping[map].id%>'>
+
+							            <td><%=mapping[map].no%></td>
+							            <td><%=mapping[map].id%></td>
+							            <td><%=mapping[map].jabberAddress%></td>
+													<td><%=mapping[map].externalAddress%></td>
+													<td><%=mapping[map].friendlyname%></td>
+							            <td>
+							            	<span class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal" onclick="editData('<%=mapping[map].id%>',<%=mapping[map].no%>,'<%=mapping[map].jabberAddress%>','<%=mapping[map].externalAddress%>','<%=mapping[map].friendlyname%>','<%=mapping[map].sid%>')">
+							            		Edit
+							            	</span>
+							            	<span class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="deleteData('<%=mapping[map].id%>','<%=mapping[map].sid%>')" >
+							            		Delete
+							            	</span>
+							            </td>
+							        </tr>
+							        <%}%>
+							    </tbody>
+						</table>	
+					</div>
+					
+				</div>
+			</div>
+			
+		</section>
+		<!-- end content -->
+
+
+		<!-- modals -->
+		<!-- start edit modal -->
+		<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModal" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="editModal">Edit Mapping</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		      	<div id="editMappingError" class="alert alert-danger" role="alert">
+						  	Update Fail
+				</div>
+		      	<form>
+					<div class="form-group">
+						<label for="editjabberAddress">jabberAddress</label>
+					    <input type="text" class="form-control" id="editjabberAddress" placeholder="jabberAddress">
+					</div>
+					<div class="form-group">
+					    <label for="editrcnumber">RC NUMBER</label>
+					    <input type="text" class="form-control" id="editrcnumber" placeholder="RC NUMBER">
+					</div>
+					<div class="form-group">
+						<label for="editfriendlyname">Friendly Name</label>
+						<input type="text" class="form-control" id="editfriendlyname" placeholder="friendlyname">
+				</div>
+				</form> 
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" id="editMapping" class="btn btn-primary">Update</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- end edit modal -->
+
+		<!-- start delete modal -->
+		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="deleteModal">Delete Mapping</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+						<h3>Mapping will be Deleted Permanently</h3>
+		      	<h3>Are you sure?</h3>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+		        <button type="button" id="deleteMapping" class="btn btn-primary">Yes</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- end delete modal -->
+		<!-- start create modal -->
+		<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModal" aria-hidden="true">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="createModal">Create New Mapping</h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		      			<div id="createMappingError" class="alert alert-danger" role="alert">
+						  	Record was not mapped successfully
+						</div>
+		      	<form>
+					<div class="form-group">
+						<label for="newjabberAddress">jabberAddress</label>
+					    <input type="text" class="form-control" id="newjabberAddress" placeholder="jabberAddress">
+					</div>
+					<div class="form-group">
+					    <label for="newrcnumber">RC NUMBER</label>
+					    <input type="text" class="form-control" id="newrcnumber" placeholder="RC NUMBER">
+					</div>
+					<div class="form-group">
+						<label for="friendlyname">Friendly Name</label>
+						<input type="text" class="form-control" id="friendlyname" placeholder="Friendly name">
+				</div>
+				</form> 
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" id="addMapping" class="btn btn-primary">Add</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<!-- end create modal -->
+		<!-- end modals-->
+	
+</body>
+<script src="./js/jquery-3.3.1.min.js" ></script>
+<script src="./js/popper.min.js" ></script>
+<script type="text/javascript" charset="utf8" src="./js/jquery.dataTables.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+<script src="./js/dashboard.js"></script>
+</html>

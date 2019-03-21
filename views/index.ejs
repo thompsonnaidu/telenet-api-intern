@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="./css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="./css/jquery.dataTables.css">
+
+<style type="text/css">
+	#content{
+  			margin-top: 50px;
+  		}
+</style>
+</head>
+<body>
+
+		<!-- header start -->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  				<a class="navbar-brand">Telestax</a>
+    				<!-- <img src="./img/logo.png" > -->
+  				</a>	
+  				<!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+  				</button>
+
+		  		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		    		<ul class="navbar-nav mr-auto">
+		      				<li class="nav-item active">
+		        				<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+		      				</li>
+		    		</ul>
+		    	</div> -->
+		</nav>
+		<!-- end header -->
+
+		<!-- start content -->
+		<section class="container" id="content">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Login</h5>
+					<div>
+						<div id="invalidAlert" class="alert alert-danger" role="alert">
+						  	Incorrect credentials
+						</div>
+						<form action="/login" method="post">
+						  <div class="form-group">
+						    <label for="username">Username</label>
+						    <input type="text" class="form-control" id="username" placeholder="username" name="username">
+						  </div>
+						  <div class="form-group">
+						    <label for="password">Password</label>
+						    <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+						  </div>
+						  <button type="submit" class="btn btn-primary">Login</button>
+						</form>
+					</div>
+				</div>
+			<div>
+		</section>
+		<!-- end content -->
+</body>
+<script src="./js/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="./js/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="./js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		<% if(invalid){ %>
+			$('#invalidAlert').show();
+		<%} else{%>
+			$('#invalidAlert').hide();
+		<%}%>
+	});
+</script>
+</html>
