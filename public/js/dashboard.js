@@ -1,4 +1,5 @@
 	var id='',sid;
+	var table;
 	var rownumber,jaddress,eaddress,friendlyname;
 	function deleteData(id,sid){
 		this.id=id;
@@ -27,6 +28,8 @@
 				if(typeof result != 'undefined' && result.mapping.length>0){
 					var htmldata='';
 					for(var i in result.mapping){
+						
+						var fname=(typeof result.mapping[i].friendlyname == "undefined")?'':result.mapping[i].friendlyname;
 						htmldata=htmldata+`
 
     								<tr>
@@ -34,13 +37,13 @@
 							            <td>`+result.mapping[i].id+`</td>
 							            <td>`+result.mapping[i].jabberAddress+`</td>
 										<td>`+result.mapping[i].externalAddress+`</td>
-										<td>`+result.mapping[i].friendlyname+`</td>
+										<td>`+fname+`</td>
 							            <td>
 							          
-											<span class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal" onclick="editData('`+result.mapping[i].id+`',`+result.mapping[i].no+`,'`+result.mapping[i].jabberAddress+`','`+result.mapping[i].externalAddress+`')">
+											<span class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal" onclick="editData('`+result.mapping[i].id+`',`+result.mapping[i].no+`,'`+result.mapping[i].jabberAddress+`','`+result.mapping[i].externalAddress+`','${fname}','${result.mapping[i].sid}')">
 											Edit
 										</span>
-							            	<span class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="deleteData('`+result.mapping[i].id+`')">
+							            	<span class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="deleteData('`+result.mapping[i].id+`','${result.mapping[i].sid}')">
 							            		Delete
 							            	</span>
 							            </td>
@@ -54,7 +57,7 @@
 		})
 	}
 	$(document).ready( function () {
-   var  table= $('#mappingTable').DataTable();
+   table= $('#mappingTable').DataTable();
    $("#createMappingError").hide();
    $("#editMappingError").hide();
    //onclick create mapping
@@ -112,12 +115,12 @@
 							            <td>`+result.id+`</td>
 							            <td>`+result.jabberAddress+`</td>
 										<td>`+result.externalAddress+`</td>
-										<td>`+result.friendlyname+`</td>
+										<td>`+result.domain+`</td>
 							            <td>
-							            	<span class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal onclick="editData('`+result.id+`',`+rownumber+`)">
+							            	<span class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal onclick="editData('`+result.id+`',`+rownumber+`,'${result.jabberAddress}','${result.externalAddress}','${result.domain}','${sid}')">
 							            		Edit
 							            	</span>
-							            	<span class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="deleteData('`+result.id+`')">
+							            	<span class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="deleteData('`+result.id+`','${sid}')">
 							            		Delete
 							            	</span>
 							            </td>
@@ -134,7 +137,7 @@
 					
 					$("#editMappingError").show();
 				}    	
-				location.reload();		
+				//location.reload();		
     		}
     	});
 
@@ -153,7 +156,8 @@
 				
 				getallMapping();
 				$('#deleteModal').modal('hide');
-				location.reload();
+				//location.reload();
+				table.ajax.reload(null,true);
 			}
 			
 		});

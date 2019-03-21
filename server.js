@@ -175,7 +175,7 @@ function processAllMapping(bodyData){
 
 		Promise.all(executeAllPromise)
 			   .then((results)=>{
-			   		console.log("results-->",results);
+			   	//	console.log("results-->",results);
 			   		for(var number in bodyData){
 			   			let nos=parseInt(number) +1;
 			   			let data=bodyData[number];
@@ -285,22 +285,21 @@ app.post('/mapping/add',(req,response)=>{
 	var friendlyname=req.body.friendlyname;
 	var phoneNumber=req.body.externalAddress;
 	var data={
-			  "jabberAddress": req.body.jabberAddress,
-		
-			"domain": req.body.friendlyname,
-			  "externalAddress": req.body.externalAddress
+			  "jabberAddress": ""+req.body.jabberAddress,
+			  "domain":""+req.body.friendlyname,
+			  "externalAddress":""+req.body.externalAddress
 			}
 
 	if(!checkSession(req)){
 		response.redirect('/fail');
 	}else{
-
+		console.log(data,url);
 		request.post({
 			url:url,
 			body:data,
 			headers:{
-			'Content-Type': 'application/json',
-      		"Authorization": "Basic " +session.btoa
+			'Content-Type':'application/json',
+			"Authorization": "Basic " +session.btoa
 			},
 			method:"POST",
 			json:true
@@ -313,6 +312,7 @@ app.post('/mapping/add',(req,response)=>{
 				var temp=res.body;
 				//console.log(res.body);
 				if(res.statusCode == 200){
+					console.log("my data");
 					externalService.extServiceAddMapping(session.username,session.btoa,phoneNumber,friendlyname).then((isSuccess)=>{
 						if(isSuccess){
 							response.json(temp);
@@ -320,12 +320,13 @@ app.post('/mapping/add',(req,response)=>{
 							response.json({error:"fail"})
 						}
 					}).catch((err)=>{
-						console.log(err);
+						console.log("error in catch",err);
 						response.json({error:""+err})
 					});
 						
 
 				}else{
+					console.log("error in call");
 					response.json({error:res.body});
 				}
 				
@@ -378,7 +379,6 @@ app.post('/mapping/delete',(req,response)=>{
 						
 
 				}
-				response.json(temp);
 			}
 		});
 

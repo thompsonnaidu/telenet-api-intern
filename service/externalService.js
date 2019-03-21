@@ -1,4 +1,4 @@
-
+const querystring=require("querystring");
 const externalServiceRequest = require('request');
 module.exports={
 
@@ -6,26 +6,27 @@ module.exports={
 	extServiceAddMapping:function (username,btoa,phoneNumber,friendlyName){
 		
 		var endPointUrl="https://cloud.restcomm.com/restcomm/2012-04-24/Accounts/"+username+"/IncomingPhoneNumbers.json";
-		var data={
-			"PhoneNumber":phoneNumber,
-			"SmsUrl":"https://cloud-xmpp-service.restcomm.com/xmpp/messages/sms",
-			"isSIP":"true",
-			"FriendlyName":friendlyName
-		};
+		var data=querystring.stringify({
+											"PhoneNumber":phoneNumber,
+											"SmsUrl":"https://cloud-xmpp-service.restcomm.com/xmpp/messages/sms",
+											"isSIP":"true",
+											"FriendlyName":friendlyName
+										});
 		console.log("in external service addMapping -->",endPointUrl,data);
 		return new Promise((resolve,reject)=>{
 			externalServiceRequest.post({
 				url:endPointUrl,
 				body:data,
 				headers:{
-					'Content-Type': 'application/json',
-	      			"Authorization": "Basic " +btoa
+					"Authorization": "Basic " +btoa,
+					'Content-Type': 'application/x-www-form-urlencoded',
+    				'Content-Length': data.length
 		      	},
 		      	method:"POST",
 		      	json:true
 
 				},(exterror,extres)=>{
-					console.log("entered the external create service call");
+				//	console.log("entered the external create service call");
 					if(exterror){
 						console.log("ext call while adding mapping failed with error ",exterror);
 
@@ -88,9 +89,10 @@ module.exports={
 	//delete sid for mapping 
 	extServiceDeleteMapping:function(username,btoa,sid){
 		var endPointUrl="https://cloud.restcomm.com/restcomm/2012-04-24/Accounts/"+username+"/IncomingPhoneNumbers/"+sid;
+		console.log(endPointUrl);
 		var data={
 		};
-		new Promise((resolve,reject)=>{
+		return new Promise((resolve,reject)=>{
 			externalServiceRequest.delete({
 				url:endPointUrl,
 				body:data,
@@ -110,7 +112,7 @@ module.exports={
 							console.log("call successfull");
 							resolve(true);
 						}else{
-							console.log("ext call failed ",extres);
+							console.log("ext call failed ",extres.statusCode,extres.headers);
 							resolve(false) ;
 						}
 					}
