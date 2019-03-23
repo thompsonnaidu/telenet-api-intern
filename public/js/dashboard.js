@@ -7,6 +7,7 @@
 	}
 
 	function editData(ids,row,jabberAddress,externalAddress,friendlyname,sid){
+		console.log("edit data");
 		this.id=ids;
 		this.rownumber=row;
 		this.jaddress=jabberAddress;
@@ -23,7 +24,7 @@
 			type:"get",
 			success(result){
 				console.log("i ma in",result.mapping);
-				
+				console.log(result);
 				console.log(result.length);
 				if(typeof result != 'undefined' && result.mapping.length>0){
 					var htmldata='';
@@ -56,10 +57,37 @@
 			}
 		})
 	}
-	$(document).ready( function () {
-   table= $('#mappingTable').DataTable();
+
+$(document).ready( function () {
+   table= $('#mappingTable').DataTable({
+   		ajax: {
+   			select:true,
+	        url: '/api/allmapping',
+	        dataSrc: function(json){
+
+	        		for(let index in json.mapping){
+	        				json.mapping[index].DT_RowId=json.mapping[index].id;
+	        		}
+	        		console.log(json);
+	        		return json.mapping;
+	        },  
+    	},
+    	columns:[{data:"no"},{data:"id"},{data:"jabberAddress"},{data:"externalAddress"},{data:"friendlyname",defaultContent:""},{data:"sid",render:(data,type,row)=>{
+			if(!row.hasOwnProperty("friendlyname")){
+    			row["friendlyname"]="";
+			}
+    		return `<span class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal" onclick="editData('`+row["id"]+`',`+row["no"]+`,'${row["jabberAddress"]}','${row["externalAddress"]}','${row["friendlyname"]}','${data}')">
+							            		Edit
+							            	</span>
+							            	<span class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="deleteData('`+row["id"]+`','${data}')">
+							            		Delete
+							            	</span>`
+    	}}]
+   });
    $("#createMappingError").hide();
    $("#editMappingError").hide();
+
+
    //onclick create mapping
     $('#addMapping').on('click',function(){
     	console.log("i am in click");
@@ -76,13 +104,13 @@
     			//console.log(result)
     			var totalrow=$("#mappingTable tr").length+1;
     			if(typeof result.error == 'undefined'){
-    			getallMapping();
-				$('#createModal').modal('hide');
-				$("#newjabberAddress").val("");
-				$("#newrcnumber").val("");
-				$("#friendlyname").val("");
-				
-				$("#createMappingError").hide();
+    				table.ajax.reload();
+					$('#createModal').modal('hide');
+					$("#newjabberAddress").val("");
+					$("#newrcnumber").val("");
+					$("#friendlyname").val("");
+					
+					$("#createMappingError").hide();
 				
 				}else{
 					
@@ -108,25 +136,19 @@
     		success(result){
     			if(typeof result.error == 'undefined'){
 					//console.log(typeof result.error != undefined);
-
-					$('#'+id).empty().html(`
-
-							            <td>`+rownumber+`</td>
-							            <td>`+result.id+`</td>
-							            <td>`+result.jabberAddress+`</td>
-										<td>`+result.externalAddress+`</td>
-										<td>`+result.domain+`</td>
-							            <td>
-							            	<span class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal onclick="editData('`+result.id+`',`+rownumber+`,'${result.jabberAddress}','${result.externalAddress}','${result.domain}','${sid}')">
-							            		Edit
-							            	</span>
-							            	<span class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="deleteData('`+result.id+`','${sid}')">
-							            		Delete
-							            	</span>
-							            </td>
-    				`);
-
-				
+					let tempdata=table.row($('#'+id)).data();
+					let domainName=(result.hasOwnProperty("domain"))?result.domain:"";
+					//table.row($('#'+id)).remove();	
+					let finalData={
+							"DT_RowId":result.id,
+							"no":tempdata.no,
+							"id":result.id,
+							"jabberAddress":result.jabberAddress,
+							"externalAddress":result.externalAddress,
+							"friendlyname":(result.hasOwnProperty("domain"))?result.domain:"",
+							"sid":tempdata.sid
+					}
+					table.row($('#'+id)).data(finalData).draw();
 				$("#editjabberAddress").val("");
 				$("#editrcnumber").val("");
 				$("#editfriendlyname").val("");
@@ -153,16 +175,13 @@
 			data:{id:id,sid:sid},
 			success(result){
 				console.log(result);
-				
-				getallMapping();
+				table.ajax.reload();
 				$('#deleteModal').modal('hide');
-				//location.reload();
-				table.ajax.reload(null,true);
+				
 			}
 			
 		});
-		//location.reload();
-    	
+		
     	
     });
 
@@ -175,7 +194,7 @@
 		$("#friendlyname").val("");
 		$("#createMappingError").hide();
 	//	location.reload();
-		
+		table.ajax.reload();
     });
 
     $('#editModal').on('hidden.bs.modal',function(e){
@@ -187,11 +206,14 @@
 	});
 	
     $('#editModal').on('show.bs.modal',function(e){
-    	
+    	console.log("i",table.row($('#'+id)).data(),id);
+
     	$("#editjabberAddress").val(jaddress);
 		$("#editrcnumber").val(eaddress);
 		$("#editfriendlyname").val(friendlyname);
 		$("#editMappingError").hide();
     });
+
+
 } );
 

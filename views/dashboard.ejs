@@ -53,24 +53,7 @@
 							        </tr>
 							    </thead>
 							    <tbody>
-							    	<%  for( var map in mapping){ %>
-							        	<tr id='<%=mapping[map].id%>'>
-
-							            <td><%=mapping[map].no%></td>
-							            <td><%=mapping[map].id%></td>
-							            <td><%=mapping[map].jabberAddress%></td>
-													<td><%=mapping[map].externalAddress%></td>
-													<td><%=mapping[map].friendlyname%></td>
-							            <td>
-							            	<span class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editModal" onclick="editData('<%=mapping[map].id%>',<%=mapping[map].no%>,'<%=mapping[map].jabberAddress%>','<%=mapping[map].externalAddress%>','<%=mapping[map].friendlyname%>','<%=mapping[map].sid%>')">
-							            		Edit
-							            	</span>
-							            	<span class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal" onclick="deleteData('<%=mapping[map].id%>','<%=mapping[map].sid%>')" >
-							            		Delete
-							            	</span>
-							            </td>
-							        </tr>
-							        <%}%>
+							    	
 							    </tbody>
 						</table>	
 					</div>
@@ -181,7 +164,6 @@
 		</div>
 		<!-- end create modal -->
 		<!-- end modals-->
-	
 </body>
 <script src="./js/jquery-3.3.1.min.js" ></script>
 <script src="./js/popper.min.js" ></script>
